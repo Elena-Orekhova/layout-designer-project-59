@@ -1,0 +1,22 @@
+$theme-colors: (
+  "primary": #4545A5,
+  "secondary":#6C757D,
+  "success": #28A745,
+  "info": #17A2B8,
+  "warning": #FFC107,
+  "danger": #DC3545,
+  "light": #FBFBFB,
+  "dark": #343A40,
+  "gray": #efefef,
+  "text": #212529
+);
+
+$grid-breakpoints: (
+  xxl: 1600px
+);
+
+$container-max-widths: (
+  xxl: 1540px
+);
+
+$enable-shadows: true;

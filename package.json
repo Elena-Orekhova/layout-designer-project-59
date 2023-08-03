@@ -1,0 +1,16 @@
+{
+  "name": "layout-designer-project-59",
+  "version": "1.0.0",
+  "description": "[![Actions Status](https://github.com/Elena-Orekhova/layout-designer-project-59/workflows/hexlet-check/badge.svg)](https://github.com/Elena-Orekhova/layout-designer-project-59/actions)",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "main": "gulp"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esm": "^3.2.25",
+    "sass": "^1.64.1"
+  }
+}
