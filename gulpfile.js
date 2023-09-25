@@ -1,60 +1,76 @@
 const gulp = require('gulp');
 const browserSync = require('browser-sync').create();
-const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 const sass = require('gulp-sass')(require('sass'));
 const pug = require('gulp-pug');
 const autoprefixer = require('gulp-autoprefixer');
-const cleanCSS = require('gulp-clean-css');
+const surge = require('gulp-surge');
+const htmlPrettify = require('gulp-html-prettify');
+const rimraf = require('rimraf');
 
-// Задача для сборки JavaScript файлов
-gulp.task('scripts', function () {
-  return gulp.src('src/js/*.js')
-    .pipe(concat('app.min.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest('build/js'));
+// Задача для очистки HTML-файлов
+gulp.task('clean-html', (done) => {
+  rimraf('build/*.html', done);
+});
+
+// Задача для очистки HTML-файлов
+gulp.task('clean-css', (done) => {
+  rimraf('build/css/*.css', done);
+});
+
+// Динамический импорт 'del'
+let delPromise = import('del');
+
+// Задача для компиляции Pug файлов
+gulp.task('pug', gulp.series(async () => {
+  await delPromise;
+
+  return gulp.src('src/pug/*.pug')
+    .pipe(pug())
+    .pipe(gulp.dest('build'));
+}));
+
+// Задача для форматирования HTML-кода
+gulp.task('prettify', () => {
+  return gulp.src('build/*.html')
+  .pipe(htmlPrettify({
+    indent_char: ' ',
+    indent_size: 2,
+  }))
+  .pipe(gulp.dest('build'));
 });
 
 // Задача для компиляции и сборки стилей
 gulp.task('styles', function () {
   return gulp.src('src/scss/*.scss')
-    .pipe(sass())
+    .pipe(sass({ outputStyle: 'expanded' }).on('error', sass.logError))
     .pipe(autoprefixer())
-    .pipe(cleanCSS())
-    .pipe(concat('styles.min.css'))
+    .pipe(concat('styles.css'))
     .pipe(gulp.dest('build/css'));
 });
 
-// Задача для компиляции Pug файлов
-gulp.task('pug', function () {
-  return gulp.src('src/pug/*.pug')
-    .pipe(pug())
-    .pipe(gulp.dest('build'));
-});
-
-// Задача для запуска сервера BrowserSync
-gulp.task('serve', function () {
-  browserSync.init({
-    server: {
-      baseDir: './build'
-    }
+// Задача для Surge
+gulp.task('deploy', () => {
+  return surge({
+    project: './build',
+    domain: 'Project_Messenger_Hexlet-Chat.surge.sh'
   });
 });
 
-// // Задача по умолчанию, которая будет запущена при вводе команды 'gulp' в консоли
-// gulp.task('default', gulp.series('serve'));
+// Задача для запуска всех задач сборки
+gulp.task('build', gulp.parallel('pug', 'prettify', 'styles', 'deploy'));
 
-// Задача по умолчанию, которая будет запускать все задачи
-gulp.task('build', gulp.parallel('scripts', 'styles', 'pug'));
-
-// Задача для отслеживания изменений в файлах и автоматической сборки
-gulp.task('watch', () => {
-  gulp.watch('src/scss/**/*.scss', gulp.series('styles'));
-  gulp.watch('src/js/**/*.js', gulp.series('scripts'));
-  // gulp.watch('src/images/**/*', gulp.series('images'));
-  gulp.watch('src/pug/*.pug', gulp.series('pug'));
-  gulp.watch('./**/*').on('change', browserSync.reload);
+// Задача для отслеживания изменений в файлах и автоматической сборки + BrowserSync
+  gulp.task('watch', () => {
+    browserSync.init({
+      server: {
+        baseDir: './build'
+      }
+    });
+    gulp.watch('src/scss/**/*.scss', gulp.series('styles'));
+    gulp.watch('src/pug/**/*.pug', gulp.series('pug'));
+    gulp.watch('./**/*').on('change', browserSync.reload);
 });
 
 // Задача по умолчанию, которая запускает watch
-gulp.task('default', gulp.series('build', 'watch', 'serve'));
+gulp.task('start', gulp.series('build', 'watch'));

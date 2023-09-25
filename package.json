@@ -5,12 +5,22 @@
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "main": "gulp"
+    "main": "gulp start",
+    "deploy": "gulp deploy"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "browser-sync": "^2.29.3",
+    "del": "^7.1.0",
     "esm": "^3.2.25",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-html-prettify": "^0.0.1",
+    "gulp-sass": "^5.1.0",
+    "gulp-surge": "^0.1.4",
+    "rimraf": "^5.0.1",
     "sass": "^1.64.1"
   }
 }

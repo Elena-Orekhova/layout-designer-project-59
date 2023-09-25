@@ -26,8 +26,19 @@
   background-color: var(--light);
 }
 
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 .container-xxl {
+  display: grid;
+  grid-template-columns: min-content 950px;
+
   height: 100vh;
 
   overflow: hidden;
